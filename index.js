@@ -96,7 +96,7 @@ class MultipleChoice extends BaseComponent {
         this._updateSelectedOptions(selectedOptions);
 
         //run callback
-        this.props.onSelection(selectedOption);
+        this.props.onSelection(selectedOptions);
     }
 
     _isSelected(option) {
