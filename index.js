@@ -24,7 +24,7 @@ const propTypes = {
     renderText: React.PropTypes.func,
     style: View.propTypes.style,
     optionStyle: View.propTypes.style,
-    disabled: PropTypes.bool
+    disabled: React.PropTypes.bool
 };
 const defaultProps = {
     options: [],
