@@ -84,7 +84,7 @@ class MultipleChoice extends BaseComponent {
     _selectOption(selectedOption) {
 
         let selectedOptions = this.state.selectedOptions;
-        const index = selectedOptions.indexOf(selectedOption);
+        const index = selectedOptions.findIndex(option => option.value === selectedOption.value);
 
         if (index === -1) {
             this._validateMaxSelectedOptions();
@@ -100,7 +100,7 @@ class MultipleChoice extends BaseComponent {
     }
 
     _isSelected(option) {
-        return this.state.selectedOptions.indexOf(option) !== -1;
+        return this.state.selectedOptions.findIndex(el => el.value === option.value) !== -1;
     }
 
     _renderIndicator(option) {
@@ -130,10 +130,10 @@ class MultipleChoice extends BaseComponent {
     _renderText(option) {
 
         if(typeof this.props.renderText === 'function') {
-            return this.props.renderText(option);
+            return this.props.renderText(option.label);
         }
 
-        return (<Text>{option}</Text>);
+        return (<Text>{option.label}</Text>);
     }
 
     _renderRow(option) {
