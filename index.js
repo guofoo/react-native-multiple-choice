@@ -75,10 +75,10 @@ class MultipleChoice extends BaseComponent {
         const selectedOptions = this.state.selectedOptions;
 
         if (maxSelectedOptions && selectedOptions.length > 0 && selectedOptions.length >= maxSelectedOptions) {
-            selectedOptions.splice(0, 1);
+            const newSelectedOptions = a.slice(1, selectedOptions.length);
         }
 
-        this._updateSelectedOptions(selectedOptions);
+        this._updateSelectedOptions(newSelectedOptions);
     }
 
     _selectOption(selectedOption) {
@@ -88,15 +88,15 @@ class MultipleChoice extends BaseComponent {
 
         if (index === -1) {
             this._validateMaxSelectedOptions();
-            selectedOptions.push(selectedOption);
+            const newSelectedOptions = [...selectedOptions, selectedOption];
         } else {
-            selectedOptions.splice(index, 1);
+            const newSelectedOptions = [...selectedOptions.slice(0, index), ...selectedOptions.slice(index+1, selectedOptions.length)];
         }
 
-        this._updateSelectedOptions(selectedOptions);
+        this._updateSelectedOptions(newSelectedOptions);
 
         //run callback
-        this.props.onSelection(selectedOptions);
+        this.props.onSelection(newSelectedOptions);
     }
 
     _isSelected(option) {
