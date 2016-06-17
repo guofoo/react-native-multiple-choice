@@ -24,7 +24,9 @@ const propTypes = {
     renderText: React.PropTypes.func,
     style: View.propTypes.style,
     optionStyle: View.propTypes.style,
-    disabled: React.PropTypes.bool
+    disabled: React.PropTypes.bool,
+    valueKey: React.PropTypes.string,
+    labelKey: React.PropTypes.string,
 };
 const defaultProps = {
     options: [],
@@ -32,7 +34,9 @@ const defaultProps = {
     onSelection(option){},
     style:{},
     optionStyle:{},
-    disabled: false
+    disabled: false,
+    valueKey: 'value',
+    labelKey: 'label',
 };
 
 class MultipleChoice extends BaseComponent {
@@ -84,7 +88,7 @@ class MultipleChoice extends BaseComponent {
     _selectOption(selectedOption) {
 
         let selectedOptions = this.state.selectedOptions;
-        const index = selectedOptions.findIndex(option => option.value === selectedOption.value);
+        const index = selectedOptions.findIndex(option => option[this.props.valueKey] === selectedOption[this.props.valueKey]);
 
         if (index === -1) {
             this._validateMaxSelectedOptions();
@@ -100,7 +104,7 @@ class MultipleChoice extends BaseComponent {
     }
 
     _isSelected(option) {
-        return this.state.selectedOptions.findIndex(el => el.value === option.value) !== -1;
+        return this.state.selectedOptions.findIndex(el => el[this.props.valueKey] === option[this.props.valueKey]) !== -1;
     }
 
     _renderIndicator(option) {
@@ -130,10 +134,10 @@ class MultipleChoice extends BaseComponent {
     _renderText(option) {
 
         if(typeof this.props.renderText === 'function') {
-            return this.props.renderText(option.label);
+            return this.props.renderText(option[this.props.labelKey]);
         }
 
-        return (<Text>{option.label}</Text>);
+        return (<Text>{option[this.props.labelKey]}</Text>);
     }
 
     _renderRow(option) {
