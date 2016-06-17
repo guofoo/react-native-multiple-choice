@@ -77,9 +77,12 @@ class MultipleChoice extends BaseComponent {
     _validateMaxSelectedOptions() {
         const maxSelectedOptions = this.props.maxSelectedOptions;
         const selectedOptions = this.state.selectedOptions;
+        let newSelectedOptions = null;
 
         if (maxSelectedOptions && selectedOptions.length > 0 && selectedOptions.length >= maxSelectedOptions) {
-            const newSelectedOptions = a.slice(1, selectedOptions.length);
+            newSelectedOptions = a.slice(1, selectedOptions.length);
+        } else {
+            newSelectedOptions = [...selectedOptions];
         }
 
         this._updateSelectedOptions(newSelectedOptions);
@@ -89,12 +92,12 @@ class MultipleChoice extends BaseComponent {
 
         let selectedOptions = this.state.selectedOptions;
         const index = selectedOptions.findIndex(option => option[this.props.valueKey] === selectedOption[this.props.valueKey]);
-
+        let newSelectedOptions = null;
         if (index === -1) {
             this._validateMaxSelectedOptions();
-            const newSelectedOptions = [...selectedOptions, selectedOption];
+            newSelectedOptions = [...selectedOptions, selectedOption];
         } else {
-            const newSelectedOptions = [...selectedOptions.slice(0, index), ...selectedOptions.slice(index+1, selectedOptions.length)];
+            newSelectedOptions = [...selectedOptions.slice(0, index), ...selectedOptions.slice(index+1, selectedOptions.length)];
         }
 
         this._updateSelectedOptions(newSelectedOptions);
