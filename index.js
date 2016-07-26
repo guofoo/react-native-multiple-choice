@@ -1,14 +1,14 @@
 'use strict';
 
-import React from 'react-native';
-var {
+import React from 'react';
+import {
     Text,
     TouchableOpacity,
     View,
     Image,
     ListView,
     PropTypes
-    } = React;
+    } from 'react-native';
 
 import BaseComponent from './BaseComponent'
 import Styles from './styles'
@@ -24,7 +24,9 @@ const propTypes = {
     renderText: React.PropTypes.func,
     style: View.propTypes.style,
     optionStyle: View.propTypes.style,
-    disabled: PropTypes.bool
+    disabled: React.PropTypes.bool,
+    valueKey: React.PropTypes.string,
+    labelKey: React.PropTypes.string,
 };
 const defaultProps = {
     options: [],
@@ -32,7 +34,9 @@ const defaultProps = {
     onSelection(option){},
     style:{},
     optionStyle:{},
-    disabled: false
+    disabled: false,
+    valueKey: 'value',
+    labelKey: 'label',
 };
 
 class MultipleChoice extends BaseComponent {
@@ -73,34 +77,37 @@ class MultipleChoice extends BaseComponent {
     _validateMaxSelectedOptions() {
         const maxSelectedOptions = this.props.maxSelectedOptions;
         const selectedOptions = this.state.selectedOptions;
+        let newSelectedOptions = null;
 
         if (maxSelectedOptions && selectedOptions.length > 0 && selectedOptions.length >= maxSelectedOptions) {
-            selectedOptions.splice(0, 1);
+            newSelectedOptions = a.slice(1, selectedOptions.length);
+        } else {
+            newSelectedOptions = [...selectedOptions];
         }
 
-        this._updateSelectedOptions(selectedOptions);
+        this._updateSelectedOptions(newSelectedOptions);
     }
 
     _selectOption(selectedOption) {
 
         let selectedOptions = this.state.selectedOptions;
-        const index = selectedOptions.indexOf(selectedOption);
-
+        const index = selectedOptions.findIndex(option => option[this.props.valueKey] === selectedOption[this.props.valueKey]);
+        let newSelectedOptions = null;
         if (index === -1) {
             this._validateMaxSelectedOptions();
-            selectedOptions.push(selectedOption);
+            newSelectedOptions = [...selectedOptions, selectedOption];
         } else {
-            selectedOptions.splice(index, 1);
+            newSelectedOptions = [...selectedOptions.slice(0, index), ...selectedOptions.slice(index+1, selectedOptions.length)];
         }
 
-        this._updateSelectedOptions(selectedOptions);
+        this._updateSelectedOptions(newSelectedOptions);
 
         //run callback
-        this.props.onSelection(selectedOption);
+        this.props.onSelection(newSelectedOptions);
     }
 
     _isSelected(option) {
-        return this.state.selectedOptions.indexOf(option) !== -1;
+        return this.state.selectedOptions.findIndex(el => el[this.props.valueKey] === option[this.props.valueKey]) !== -1;
     }
 
     _renderIndicator(option) {
@@ -130,10 +137,10 @@ class MultipleChoice extends BaseComponent {
     _renderText(option) {
 
         if(typeof this.props.renderText === 'function') {
-            return this.props.renderText(option);
+            return this.props.renderText(option[this.props.labelKey]);
         }
 
-        return (<Text>{option}</Text>);
+        return (<Text>{option[this.props.labelKey]}</Text>);
     }
 
     _renderRow(option) {
